@@ -1,5 +1,5 @@
 {
-  "name": "perspeqtive/sulu-access-control-custom-query-enhancer",
+  "name": "perspeqtive/sulu-access-control-custom-query-enhancer-bundle",
   "description": "Allows to extend acl checks by entity type",
   "license": "proprietary",
   "type": "sulu-bundle",
