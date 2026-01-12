@@ -76,12 +76,15 @@ readonly class DefaultAccessControlQueryEnhancer implements AccessControlQueryEn
         $subQueryBuilder = $this->getAllowedItemsDql($entityClass, $entityIdField, $entityClassField);
         $notAllowedItemsQueryBuilder = $this->getNotAllowedQueryBuilder($entityClass, $subQueryBuilder, $user, $permission, $entityClassField);
 
-        $result = $notAllowedItemsQueryBuilder->getQuery()->getScalarResult();
-        $ids = array_column($result, 'id');
+        try {
+            $result = $notAllowedItemsQueryBuilder->getQuery()->getScalarResult();
+            $ids = array_column($result, 'id');
+            if (count($ids) > 0) {
+                $queryBuilder->andWhere(sprintf('%s.id NOT IN (:accessControlIds)', $entityAlias));
+                $queryBuilder->setParameter('accessControlIds', $ids);
+            }
+        } catch (\Exception $e) {
 
-        if (count($ids) > 0) {
-            $queryBuilder->andWhere(sprintf('%s.id NOT IN (:accessControlIds)', $entityAlias));
-            $queryBuilder->setParameter('accessControlIds', $ids);
         }
     }
 
