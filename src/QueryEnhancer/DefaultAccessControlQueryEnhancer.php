@@ -85,25 +85,6 @@ readonly class DefaultAccessControlQueryEnhancer implements AccessControlQueryEn
         }
     }
 
-    private function getUserRoleIds(?UserInterface $user): array
-    {
-        if ($user) {
-            $roleIds = [];
-
-            foreach ($user->getRoleObjects() as $role) {
-                if ($role->getSystem() === $this->systemStore->getSystem()) {
-                    $roleIds[] = $role->getId();
-                }
-            }
-
-            return $roleIds;
-        }
-
-        $anonymousRole = $this->systemStore->getAnonymousRole();
-
-        return $anonymousRole ? [$anonymousRole->getId()] : [];
-    }
-
     private function getAllowedItemsDql(string $entityClass, string $entityIdField = 'id', ?string $entityClassField = null): QueryBuilder
     {
         $accessClassCondition = 'accessControl.entityClass = :entityClass';
@@ -148,14 +129,7 @@ readonly class DefaultAccessControlQueryEnhancer implements AccessControlQueryEn
                 $notAllowedItemsQueryBuilder->expr()->exists($subQueryBuilder->getDQL()),
             ),
         );
-        $notAllowedItemsQueryBuilder->setParameter('entityClass', $entityClass)
-            ->setParameter('roleIds', $this->getUserRoleIds($user))
-            ->setParameter('permission', $permission)
-        ;
-
-        if (null !== $entityClassField) {
-            $notAllowedItemsQueryBuilder->setParameter('entityClassField', $entityClassField);
-        }
+        $this->applyParameters($notAllowedItemsQueryBuilder, $entityClass, $user, $permission, $entityClassField);
 
         return $notAllowedItemsQueryBuilder;
     }
@@ -174,5 +148,39 @@ readonly class DefaultAccessControlQueryEnhancer implements AccessControlQueryEn
         }
 
         return $entityIdCondition;
+    }
+
+    private function applyParameters(QueryBuilder $notAllowedItemsQueryBuilder, string $entityClass, ?UserInterface $user, int $permission, ?string $entityClassField): void
+    {
+        if (null !== $entityClassField) {
+            $notAllowedItemsQueryBuilder->setParameter('roleIds', $this->getUserRoleIds($user))
+                ->setParameter('permission', $permission)
+            ;
+
+            return;
+        }
+        $notAllowedItemsQueryBuilder->setParameter('entityClass', $entityClass)
+            ->setParameter('roleIds', $this->getUserRoleIds($user))
+            ->setParameter('permission', $permission)
+        ;
+    }
+
+    private function getUserRoleIds(?UserInterface $user): array
+    {
+        if ($user) {
+            $roleIds = [];
+
+            foreach ($user->getRoleObjects() as $role) {
+                if ($role->getSystem() === $this->systemStore->getSystem()) {
+                    $roleIds[] = $role->getId();
+                }
+            }
+
+            return $roleIds;
+        }
+
+        $anonymousRole = $this->systemStore->getAnonymousRole();
+
+        return $anonymousRole ? [$anonymousRole->getId()] : [];
     }
 }
