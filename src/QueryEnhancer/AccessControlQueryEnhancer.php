@@ -12,7 +12,7 @@ readonly class AccessControlQueryEnhancer implements AccessControlQueryEnhancerI
 {
     public function __construct(
         private iterable $queryEnhancers,
-        private AccessControlQueryEnhancerInterface $defaultQueryEnhancer
+        private AccessControlQueryEnhancerInterface $defaultQueryEnhancer,
     ) {}
 
     public function enhance(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias): void
