@@ -10,6 +10,11 @@ use PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\Tests\Unit\Mocks\Mock
 use PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\Tests\Unit\Mocks\MockSpecificAccessControlQueryEnhancer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class AccessControlQueryEnhancerTest extends TestCase
 {
     private MockSpecificAccessControlQueryEnhancer $specificEnhancer1;

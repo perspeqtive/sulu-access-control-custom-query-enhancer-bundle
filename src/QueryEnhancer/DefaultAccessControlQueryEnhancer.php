@@ -13,23 +13,20 @@ use Sulu\Component\Security\Authentication\UserInterface;
 
 readonly class DefaultAccessControlQueryEnhancer
 {
-
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private SystemStore            $systemStore,
-    )
-    {
-    }
+        private SystemStore $systemStore,
+    ) {}
 
     public function enhance(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias): void
     {
-        if ($user instanceof UserInterface === false) {
+        if (false === $user instanceof UserInterface) {
             $queryBuilder->andWhere('1 = 0');
 
             return;
         }
 
-        if ($this->isAdminUser($user) === true) {
+        if (true === $this->isAdminUser($user)) {
             return;
         }
 
@@ -38,13 +35,13 @@ readonly class DefaultAccessControlQueryEnhancer
 
     public function enhanceWithDynamicEntityClass(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias, string $entityClassField, string $entityIdField): void
     {
-        if ($user instanceof UserInterface === false) {
+        if (false === $user instanceof UserInterface) {
             $queryBuilder->andWhere('1 = 0');
 
             return;
         }
 
-        if ($this->isAdminUser($user) === true) {
+        if (true === $this->isAdminUser($user)) {
             return;
         }
         $this->enhanceMainQuery($queryBuilder, $user, $permission, $entityClass, $entityAlias, $entityClassField, $entityIdField);
@@ -55,10 +52,10 @@ readonly class DefaultAccessControlQueryEnhancer
         $roles = $user->getRoleObjects();
         foreach ($roles as $role) {
             $key = $role->getKey();
-            if ($key === null) {
+            if (null === $key) {
                 continue;
             }
-            if (in_array($key, ['admin'], true) === true) {
+            if (true === in_array($key, ['admin'], true)) {
                 return true;
             }
         }
@@ -67,14 +64,14 @@ readonly class DefaultAccessControlQueryEnhancer
     }
 
     private function enhanceMainQuery(
-        QueryBuilder   $queryBuilder,
+        QueryBuilder $queryBuilder,
         ?UserInterface $user,
-        int            $permission,
-        string         $entityClass,
-        string         $entityAlias,
-        string         $entityIdField = 'id',
-        ?string        $entityClassField = null): void
-    {
+        int $permission,
+        string $entityClass,
+        string $entityAlias,
+        string $entityIdField = 'id',
+        ?string $entityClassField = null
+    ): void {
         $subQueryBuilder = $this->getAllowedItemsDql($entityClass, $entityIdField, $entityClassField);
         $notAllowedItemsQueryBuilder = $this->getNotAllowedQueryBuilder($entityClass, $subQueryBuilder, $user, $permission, $entityClassField);
 
@@ -110,7 +107,7 @@ readonly class DefaultAccessControlQueryEnhancer
     {
         $accessClassCondition = 'accessControl.entityClass = :entityClass';
         if ($entityClassField) {
-            $accessClassCondition = 'accessControl.entityClass = entity.' . $entityClassField;
+            $accessClassCondition = 'accessControl.entityClass = entity.'.$entityClassField;
         }
 
         $subQueryBuilder = $this->entityManager->createQueryBuilder();
@@ -121,7 +118,7 @@ readonly class DefaultAccessControlQueryEnhancer
                 AccessControl::class,
                 'accessControl',
                 'WITH',
-                $accessClassCondition . ' AND ' . $this->getEntityIdCondition($entityClass, 'entity', $entityIdField)
+                $accessClassCondition.' AND '.$this->getEntityIdCondition($entityClass, 'entity', $entityIdField)
             )
             ->where(
                 $subQueryBuilder->expr()->orX(
@@ -131,7 +128,8 @@ readonly class DefaultAccessControlQueryEnhancer
                     ),
                     'accessControl.id IS NULL',
                 ),
-            );
+            )
+        ;
         $subQueryBuilder->andWhere('allowedEntity.id = entity.id');
 
         return $subQueryBuilder;
@@ -141,7 +139,8 @@ readonly class DefaultAccessControlQueryEnhancer
     {
         $notAllowedItemsQueryBuilder = $this->entityManager->createQueryBuilder();
         $notAllowedItemsQueryBuilder->select('entity.id')
-            ->from($entityClass, 'entity');
+            ->from($entityClass, 'entity')
+        ;
 
         $notAllowedItemsQueryBuilder->where(
             $notAllowedItemsQueryBuilder->expr()->not(
@@ -150,9 +149,10 @@ readonly class DefaultAccessControlQueryEnhancer
         );
         $notAllowedItemsQueryBuilder->setParameter('entityClass', $entityClass)
             ->setParameter('roleIds', $this->getUserRoleIds($user))
-            ->setParameter('permission', $permission);
+            ->setParameter('permission', $permission)
+        ;
 
-        if ($entityClassField !== null) {
+        if (null !== $entityClassField) {
             $notAllowedItemsQueryBuilder->setParameter('entityClassField', $entityClassField);
         }
 
@@ -161,11 +161,12 @@ readonly class DefaultAccessControlQueryEnhancer
 
     private function getEntityIdCondition(string $entityClass, string $entityAlias, string $entityIdField = 'id'): string
     {
-        $entityIdCondition = 'accessControl.entityId = ' . $entityAlias . '.' . $entityIdField;
+        $entityIdCondition = 'accessControl.entityId = '.$entityAlias.'.'.$entityIdField;
+
         try {
             $metadata = $this->entityManager->getClassMetadata($entityClass);
             if ('integer' === $metadata->getTypeOfField($entityIdField)) {
-                $entityIdCondition = 'accessControl.entityIdInteger = ' . $entityAlias . '.' . $entityIdField;
+                $entityIdCondition = 'accessControl.entityIdInteger = '.$entityAlias.'.'.$entityIdField;
             }
         } catch (MappingException $e) {
             $metadata = null;
