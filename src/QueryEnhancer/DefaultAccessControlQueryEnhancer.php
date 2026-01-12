@@ -7,11 +7,12 @@ namespace PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\QueryEnhancer;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Mapping\MappingException;
+use Sulu\Bundle\SecurityBundle\AccessControl\AccessControlQueryEnhancerInterface;
 use Sulu\Bundle\SecurityBundle\Entity\AccessControl;
 use Sulu\Bundle\SecurityBundle\System\SystemStore;
 use Sulu\Component\Security\Authentication\UserInterface;
 
-readonly class DefaultAccessControlQueryEnhancer
+readonly class DefaultAccessControlQueryEnhancer implements AccessControlQueryEnhancerInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
