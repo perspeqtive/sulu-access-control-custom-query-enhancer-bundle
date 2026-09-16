@@ -1,5 +1,5 @@
 # SuluAccessControlCustomQueryEnhancerBundle
-![Static Badge](https://img.shields.io/badge/sulu_compatibility-%5E3.0-DCE5E4?labelColor=112A46)
+![Static Badge](https://img.shields.io/badge/sulu_compatibility-%5E2.6_%7C%7C_%5E3.0-DCE5E4?labelColor=112A46)
 
 The **Sulu Access Control Custom Query Enhancer Bundle** lets you replace Sulu's permission filtering
 with your own logic — per entity class. Sulu applies one single, hard-wired strategy to every secured
