@@ -4,10 +4,6 @@ services:
     decorates: 'sulu_security.access_control_query_enhancer'
     arguments:
       $queryEnhancers: !tagged_iterator perspeqtive_sulu_access_control_custom_query_enhancer.query_enhancer
-      $defaultQueryEnhancer: '@perspeqtive_sulu_access_control_custom_query_enhancer.query_enhancer.default_access_control_query_enhancer'
-
-  perspeqtive_sulu_access_control_custom_query_enhancer.query_enhancer.default_access_control_query_enhancer:
-    class: PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\QueryEnhancer\DefaultAccessControlQueryEnhancer
-    arguments:
+      $defaultQueryEnhancer: '@.inner'
       $systemStore: '@sulu_security.system_store'
       $entityManager: '@doctrine.orm.entity_manager'

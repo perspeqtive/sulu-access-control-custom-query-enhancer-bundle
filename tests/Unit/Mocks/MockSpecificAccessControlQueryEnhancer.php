@@ -14,14 +14,30 @@ class MockSpecificAccessControlQueryEnhancer implements SpecificAccessControlQue
 
     public bool $isResponsible = false;
 
-    public function enhance(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias): void
+    /**
+     * @var array<string, string>
+     */
+    public array $receivedArguments = [];
+
+    public function enhance(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias, string $entityIdField = 'id'): void
     {
         $this->wasCalled = true;
+        $this->receivedArguments = [
+            'entityClass' => $entityClass,
+            'entityAlias' => $entityAlias,
+            'entityIdField' => $entityIdField,
+        ];
     }
 
     public function enhanceWithDynamicEntityClass(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias, string $entityClassField, string $entityIdField): void
     {
         $this->wasCalled = true;
+        $this->receivedArguments = [
+            'entityClass' => $entityClass,
+            'entityAlias' => $entityAlias,
+            'entityClassField' => $entityClassField,
+            'entityIdField' => $entityIdField,
+        ];
     }
 
     public function supports(string $class): bool

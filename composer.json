@@ -1,4 +1,4 @@
-{
+ {
   "name": "perspeqtive/sulu-access-control-custom-query-enhancer-bundle",
   "description": "Allows to extend acl checks by entity type",
   "license": "proprietary",
@@ -16,11 +16,10 @@
   ],
   "require": {
     "php": "^8.2",
-    "sulu/sulu": "^2.6"
+    "sulu/sulu": "^3.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^12",
-    "jackalope/jackalope-doctrine-dbal": "^1.3.4 || ^2.0",
     "php-cs-fixer/shim": "^3.75",
     "phpstan/phpstan": "^2.1",
     "phpstan/phpstan-phpunit": "^2.0",
