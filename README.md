@@ -149,4 +149,6 @@ it. If you want Sulu's permission filtering *plus* your own restriction, reprodu
 restrict yourself to `enhanceWithDynamicEntityClass()`.
 
 
+## 👩‍🍳 Contribution
 
+Please feel free to fork and extend existing or add new features and send a pull request with your changes! To establish a consistent code quality, please provide unit tests for all your changes and adapt the documentation.
