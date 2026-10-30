@@ -18,12 +18,13 @@ class MockAccessControlQueryEnhancer implements AccessControlQueryEnhancerInterf
      */
     public array $receivedArguments = [];
 
-    public function enhance(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias): void
+    public function enhance(QueryBuilder $queryBuilder, ?UserInterface $user, int $permission, string $entityClass, string $entityAlias, string $entityIdField = 'id'): void
     {
         $this->wasCalled = true;
         $this->receivedArguments = [
             'entityClass' => $entityClass,
             'entityAlias' => $entityAlias,
+            'entityIdField' => $entityIdField,
         ];
     }
 

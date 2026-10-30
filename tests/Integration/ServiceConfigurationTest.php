@@ -7,7 +7,7 @@ namespace PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\Tests\Integrati
 use Doctrine\ORM\EntityManagerInterface;
 use PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\QueryEnhancer\AccessControlQueryEnhancer;
 use PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\SuluAccessControlCustomQueryEnhancerBundle;
-use PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\Tests\Fixtures\ConcreteEnhancerConsumer;
+use PERSPEQTIVE\SuluAccessControlCustomQueryEnhancerBundle\Tests\Fixtures\EnhancerConsumer;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SecurityBundle\AccessControl\AccessControlQueryEnhancer as SuluAccessControlQueryEnhancer;
 use Sulu\Bundle\SecurityBundle\System\SystemStoreInterface;
@@ -36,10 +36,10 @@ class ServiceConfigurationTest extends TestCase
         self::assertSame(SuluAccessControlQueryEnhancer::class, $defaultClass);
     }
 
-    public function testDecoratedServiceSatisfiesConcreteTypeHints(): void
+    public function testDecoratedServiceSatisfiesInterfaceTypeHints(): void
     {
         $container = $this->buildContainer();
-        $container->register('test.concrete_enhancer_consumer', ConcreteEnhancerConsumer::class)
+        $container->register('test.enhancer_consumer', EnhancerConsumer::class)
             ->setPublic(true)
             ->setArguments([new Reference('sulu_security.access_control_query_enhancer')])
         ;
@@ -47,7 +47,7 @@ class ServiceConfigurationTest extends TestCase
 
         $container->compile();
 
-        self::assertTrue($container->hasDefinition('test.concrete_enhancer_consumer'));
+        self::assertTrue($container->hasDefinition('test.enhancer_consumer'));
     }
 
     private function buildContainer(): ContainerBuilder

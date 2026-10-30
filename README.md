@@ -1,5 +1,5 @@
 # SuluAccessControlCustomQueryEnhancerBundle
-![Static Badge](https://img.shields.io/badge/sulu_compatibility-%5E2.6_%7C%7C_%5E3.0-DCE5E4?labelColor=112A46)
+![Static Badge](https://img.shields.io/badge/sulu_compatibility-%5E2.6_%7C%7C_%5E3.0.11-DCE5E4?labelColor=112A46)
 
 The **Sulu Access Control Custom Query Enhancer Bundle** lets you replace Sulu's permission filtering
 with your own logic — per entity class. Sulu applies one single, hard-wired strategy to every secured
@@ -131,6 +131,7 @@ class EventAccessControlQueryEnhancer implements SpecificAccessControlQueryEnhan
 ```yaml
 services:
     App\Security\EventAccessControlQueryEnhancer:
+        class: App\Security\EventAccessControlQueryEnhancer
         tags:
             - { name: perspeqtive_sulu_access_control_custom_query_enhancer.query_enhancer }
 ```
@@ -148,19 +149,4 @@ it. If you want Sulu's permission filtering *plus* your own restriction, reprodu
 restrict yourself to `enhanceWithDynamicEntityClass()`.
 
 
-## ⬆️ Migration notes
-
-If you are coming from the Sulu 2.6 version of this bundle:
-
-- **`sulu/sulu: ^3.0` is now required.** Sulu 2.6 is no longer supported.
-- **`SpecificAccessControlQueryEnhancerInterface::enhance()` gained a `string $entityIdField = 'id'`
-  parameter.** Sulu 3 widened its own `enhance()` the same way, and dropping the argument would filter
-  on the wrong id column. Add the parameter to your implementations.
-- **The decorator now extends Sulu's concrete `AccessControlQueryEnhancer`.** Sulu's
-  `MediaSmartContentProvider` type hints the class instead of the interface, so a decorator that only
-  implements `AccessControlQueryEnhancerInterface` raises a `TypeError` as soon as
-  `sulu_media.media_smart_content_provider` is instantiated, and makes `bin/console lint:container`
-  fail. `tests/Integration/ServiceConfigurationTest.php` guards this.
-- **`jackalope/jackalope-doctrine-dbal` was removed** from the dev dependencies; Sulu 3 no longer uses
-  PHPCR.
 
